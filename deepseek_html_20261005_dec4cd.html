@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Проверочная работа · Прямоугольник и ромб</title>
+<script>
+(function(){
+  history.pushState(null, '', location.href);
+  window.addEventListener('popstate', function(){
+    history.pushState(null, '', location.href);
+  });
+})();
+</script>
+<script>
+(function(){
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('selectstart', function(e){
+    var t = e.target;
+    if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+    e.preventDefault();
+  });
+  document.addEventListener('dragstart', function(e){ e.preventDefault(); });
+  document.addEventListener('keydown', function(e){
+    var k = (e.key || '').toLowerCase();
+    if(e.ctrlKey || e.metaKey){
+      if(['c','x','a','u','s','p'].indexOf(k) !== -1){ e.preventDefault(); return false; }
+      if(e.shiftKey && ['i','j','c'].indexOf(k) !== -1){ e.preventDefault(); return false; }
+    }
+    if(e.key === 'F12'){ e.preventDefault(); return false; }
+  }, true);
+  document.addEventListener('copy', function(e){ e.preventDefault(); });
+  document.addEventListener('cut', function(e){ e.preventDefault(); });
+  document.addEventListener('dblclick', function(e){
+    var t = e.target;
+    if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+    var sel = window.getSelection();
+    if(sel) sel.removeAllRanges();
+  });
+  document.addEventListener('mousedown', function(e){
+    if(e.detail > 1){ e.preventDefault(); }
+  });
+})();
+</script>
+
+<script>
+MathJax = {
+  tex: {inlineMath: [['$','$'],['\\(','\\)']]},
+  svg: {fontCache: 'global'}
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+  :root{
+    --orange:#ea580c;
+    --orange-dark:#c2410c;
+    --orange-light:#ffedd5;
+    --amber:#f59e0b;
+    --amber-dark:#d97706;
+    --amber-light:#fef3c7;
+    --ok:#10b981;
+    --ok-light:#d1fae5;
+    --err:#ef4444;
+    --err-light:#fee2e2;
+    --text:#1e293b;
+    --muted:#78716c;
+    --border:#fed7aa;
+    --grid-line:#fed7aa;
+    --bg:#fffbf5;
+  }
+  *{box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif;}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 5% -5%, #ffedd5 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 100%, #fef3c7 0%, transparent 55%),
+      #fffbf5;
+    color:var(--text);
+    height:100vh;
+    display:flex;flex-direction:column;
+    position:relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  input, textarea{
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+
+  .bg-leaf{position:fixed;pointer-events:none;z-index:0;user-select:none;}
+  .bg-leaf.l1{top:6%;left:3%;transform:rotate(-25deg);font-size:80px;opacity:.14;}
+  .bg-leaf.l2{top:35%;right:4%;transform:rotate(35deg);font-size:110px;opacity:.1;}
+  .bg-leaf.l3{bottom:10%;left:10%;transform:rotate(15deg);font-size:90px;opacity:.12;}
+  .bg-leaf.l4{bottom:5%;right:15%;transform:rotate(-45deg);font-size:70px;opacity:.13;}
+  .bg-leaf.l5{top:15%;right:35%;transform:rotate(-10deg);font-size:60px;opacity:.11;}
+  .bg-leaf.l6{bottom:40%;left:40%;transform:rotate(120deg);font-size:70px;opacity:.09;}
+  .bg-leaf.l7{top:70%;left:2%;transform:rotate(60deg);font-size:65px;opacity:.1;}
+  .bg-leaf.l8{top:5%;right:8%;transform:rotate(-60deg);font-size:80px;opacity:.12;}
+
+  header{
+    padding:8px 20px;
+    display:flex;justify-content:space-between;align-items:center;
+    background:rgba(255,251,245,.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+    flex-wrap:wrap;gap:8px;
+    position:relative;z-index:10;
+    flex-shrink:0;
+  }
+  .header-title{font-size:12px;font-weight:800;color:var(--orange-dark);}
+  .header-title span{color:var(--muted);font-weight:600;margin-left:6px;}
+  .header-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .progress-pills{display:flex;gap:5px;align-items:center;}
+  .progress-pill{
+    height:24px;min-width:24px;padding:0 10px;border-radius:12px;
+    background:#fff;border:2px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:800;color:var(--muted);
+    transition:.3s;cursor:pointer;
+  }
+  .progress-pill:hover{border-color:var(--orange);color:var(--orange);}
+  .progress-pill.active{
+    background:linear-gradient(135deg,var(--orange),var(--amber));
+    color:#fff;border-color:transparent;
+  }
+  .progress-pill.done{background:var(--ok-light);color:var(--ok);border-color:var(--ok);}
+
+  #timer{
+    display:flex;align-items:center;gap:6px;
+    background:#fff;border:2px solid var(--border);
+    padding:3px 12px;border-radius:12px;
+    font-weight:800;font-size:13px;
+    color:var(--orange-dark);
+    font-variant-numeric:tabular-nums;
+  }
+  #timer.warning{
+    background:var(--err-light);border-color:var(--err);
+    color:var(--err);animation:pulse 1s infinite;
+  }
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+
+  main{
+    flex:1;padding:10px 16px 80px;
+    display:flex;justify-content:center;
+    position:relative;z-index:5;
+    overflow:hidden;min-height:0;
+  }
+  .slide{
+    display:none;
+    background:#fffdf9;border-radius:16px;
+    padding:14px 22px;
+    box-shadow:0 14px 50px rgba(234,88,12,.12);
+    border:1px solid var(--border);
+    width:100%;max-width:1300px;
+    animation:fade .4s ease;
+    position:relative;overflow:hidden;height:100%;
+    flex-direction:column;
+  }
+  .slide.active{display:flex;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  .slide::before{
+    content:'';position:absolute;top:-50px;right:-50px;
+    width:180px;height:180px;
+    background:radial-gradient(circle, rgba(254,215,170,.5) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .slide::after{
+    content:'📐';position:absolute;bottom:-15px;right:20px;
+    font-size:100px;opacity:.05;transform:rotate(-20deg);
+    pointer-events:none;
+  }
+
+  .slide-header{flex-shrink:0;margin-bottom:12px;position:relative;z-index:2;}
+  .slide-tag{
+    display:inline-block;
+    background:var(--amber-light);color:var(--amber-dark);
+    padding:3px 10px;border-radius:14px;
+    font-size:10.5px;font-weight:700;margin-bottom:5px;
+    border:1px solid rgba(245,158,11,.3);
+  }
+  .slide h2{font-size:20px;margin:0 0 3px;color:var(--orange-dark);font-weight:800;letter-spacing:-.3px;}
+  .slide .subtitle{color:var(--muted);font-size:12px;margin:0;line-height:1.4;}
+
+  .content-area{
+    flex:1;display:flex;flex-direction:column;
+    gap:12px;min-height:0;position:relative;z-index:2;overflow:hidden;
+  }
+  .task-zone{
+    flex:1;display:flex;flex-direction:column;gap:10px;
+    min-height:0;overflow:auto;transition:.3s;
+  }
+
+  .sample-toggle-btn{
+    align-self:center;background:#fff;
+    border:2px solid var(--amber);color:var(--amber-dark);
+    padding:8px 22px;border-radius:22px;
+    font-size:13px;font-weight:800;cursor:pointer;
+    transition:.2s;display:inline-flex;align-items:center;gap:8px;
+    flex-shrink:0;
+  }
+  .sample-toggle-btn:hover{background:var(--amber-light);transform:translateY(-1px);box-shadow:0 6px 18px rgba(245,158,11,.25);}
+  .sample-toggle-btn .arrow{transition:.3s;display:inline-block;}
+  .sample-toggle-btn.open .arrow{transform:rotate(180deg);}
+
+  .sample-drawer{max-height:0;overflow:hidden;transition:max-height .45s ease;flex-shrink:0;}
+  .sample-drawer.open{max-height:340px;}
+  .sample-drawer-inner{
+    background:#fffbf5;border:2px dashed var(--amber);
+    border-radius:14px;padding:14px 20px;
+    position:relative;margin-top:4px;
+  }
+  .sample-drawer-inner::before{
+    content:'📐 Образец оформления';
+    position:absolute;top:-10px;left:16px;
+    background:#fffbf5;padding:0 10px;
+    font-size:10.5px;font-weight:800;
+    color:var(--amber-dark);letter-spacing:.4px;
+    text-transform:uppercase;border-radius:5px;
+  }
+
+  .sample-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:16px;align-items:start;}
+  .sample-task{
+    background:#fff;border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;font-size:15px;font-weight:600;
+    text-align:center;color:var(--text);
+  }
+  .sample-steps{
+    background:#fff;border:1px solid var(--border);border-radius:10px;
+    padding:12px 16px;font-size:14px;line-height:1.9;
+    background-image:
+      linear-gradient(rgba(254,215,170,.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(254,215,170,.3) 1px, transparent 1px);
+    background-size:20px 20px;
+  }
+  .sample-steps .row{padding:1px 0;}
+  .sample-steps .label{font-weight:800;color:var(--orange-dark);margin-right:4px;}
+  .sample-steps .sub{padding-left:14px;}
+  .sample-note{
+    grid-column:1 / -1;
+    background:linear-gradient(135deg,#fff7ed,#ffedd5);
+    border-left:4px solid var(--orange);
+    border-radius:8px;padding:8px 14px;
+    font-size:12px;color:var(--text);line-height:1.55;margin-top:4px;
+  }
+  .sample-note b{color:var(--orange-dark);}
+
+  .task-item{
+    background:#fff;border:2px solid var(--border);border-radius:12px;
+    padding:12px 16px;display:flex;align-items:flex-start;gap:12px;transition:.2s;
+  }
+  .task-item:hover{border-color:var(--orange);box-shadow:0 6px 20px rgba(234,88,12,.08);}
+  .task-item .task-letter{
+    display:inline-flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--orange),var(--amber));
+    color:#fff;font-weight:800;font-size:14px;
+    width:30px;height:30px;border-radius:9px;
+    box-shadow:0 3px 10px rgba(234,88,12,.3);flex-shrink:0;
+  }
+  .task-item .task-content{flex:1;min-width:0;}
+  .task-item .task-expr{
+    font-size:18px;font-weight:600;line-height:1.5;
+    color:var(--text);word-break:break-word;
+  }
+  .task-item .task-note{font-size:12px;color:var(--muted);font-style:italic;margin-top:4px;}
+
+  .task-large{
+    background:#fff;border:2px solid var(--border);border-radius:14px;
+    padding:18px 22px;display:flex;flex-direction:column;gap:10px;
+  }
+  .task-large .task-expr{
+    font-size:24px;font-weight:600;text-align:center;
+    padding:12px 16px;
+    background:linear-gradient(135deg,#fffbf5,#fff7ed);
+    border-radius:10px;border:2px solid var(--border);
+  }
+  .task-large .subtask-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;margin-top:2px;}
+  .task-large .subtask{
+    background:#fffbf5;border:1px solid var(--border);border-radius:9px;
+    padding:10px 12px;font-size:14px;font-weight:600;
+    display:flex;align-items:center;gap:9px;
+  }
+  .task-large .subtask .sub-letter{
+    display:inline-flex;align-items:center;justify-content:center;
+    background:var(--orange-light);color:var(--orange-dark);
+    font-weight:800;font-size:11px;
+    width:22px;height:22px;border-radius:7px;flex-shrink:0;
+  }
+
+  .title-slide{
+    text-align:center;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:16px;padding:18px 60px;
+  }
+  .title-slide h1{
+    font-size:34px;color:var(--orange-dark);font-weight:800;
+    margin:0;letter-spacing:-.5px;
+  }
+  .title-slide .subtitle-big{font-size:15px;color:var(--muted);margin:0;}
+  .title-slide .info-grid{
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:14px;
+    width:100%;max-width:700px;margin-top:6px;
+  }
+  .info-card{
+    background:#fff;border:2px solid var(--border);border-radius:14px;
+    padding:14px 12px;text-align:center;
+  }
+  .info-card .num{font-size:26px;font-weight:800;color:var(--orange);display:block;margin-bottom:3px;}
+  .info-card .label{font-size:12px;color:var(--muted);font-weight:600;}
+  .rules-box{
+    background:linear-gradient(135deg,#fff7ed,#ffedd5);
+    border-left:5px solid var(--orange);border-radius:12px;
+    padding:14px 20px;text-align:left;
+    max-width:700px;width:100%;font-size:13px;line-height:1.65;
+  }
+  .rules-box b{color:var(--orange-dark);}
+  .rules-box ul{margin:5px 0;padding-left:20px;}
+
+  .level-selector{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto;flex:1;}
+  .level-column{
+    background:#fff;border:2px solid var(--border);border-radius:12px;
+    padding:10px 14px;display:flex;align-items:center;gap:14px;
+    transition:.3s;opacity:.55;cursor:pointer;
+  }
+  .level-column.active{opacity:1;box-shadow:0 8px 22px rgba(234,88,12,.18);transform:translateX(3px);}
+  .level-column:hover{opacity:1;}
+  .level-column.easy.active{border-color:#16a34a;background:linear-gradient(90deg,#f0fdf4,#fff);}
+  .level-column.medium.active{border-color:#d97706;background:linear-gradient(90deg,#fffbeb,#fff);}
+  .level-column.hard.active{border-color:#dc2626;background:linear-gradient(90deg,#fef2f2,#fff);}
+
+  .level-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:5px 12px;border-radius:16px;
+    font-size:12px;font-weight:800;color:#fff;
+    flex-shrink:0;white-space:nowrap;
+  }
+  .level-column.easy .level-badge{background:linear-gradient(135deg,#16a34a,#22c55e);}
+  .level-column.medium .level-badge{background:linear-gradient(135deg,#d97706,#f59e0b);}
+  .level-column.hard .level-badge{background:linear-gradient(135deg,#dc2626,#ef4444);}
+
+  .level-task{font-size:15px;font-weight:600;line-height:1.5;color:var(--text);flex:1;word-break:break-word;}
+  .level-task .sub{padding:3px 0;}
+
+  nav{
+    position:fixed;bottom:0;left:0;right:0;
+    padding:8px 20px;
+    background:rgba(255,251,245,.9);
+    backdrop-filter:blur(10px);
+    border-top:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+    z-index:100;
+  }
+  nav button{
+    padding:8px 18px;border:none;border-radius:8px;
+    font-size:12px;font-weight:700;cursor:pointer;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  nav .nav-prev{background:#fff;color:var(--orange);border:2px solid var(--orange);}
+  nav .nav-prev:hover:not(:disabled){background:var(--orange-light);}
+  nav .nav-next{
+    background:linear-gradient(135deg,var(--orange),var(--amber));
+    color:#fff;box-shadow:0 4px 14px rgba(234,88,12,.35);
+  }
+  nav button:disabled{opacity:.4;cursor:not-allowed;}
+  nav .nav-info{font-size:11px;font-weight:700;color:var(--muted);}
+
+  .finish-early-btn{
+    position:fixed;
+    right:20px;
+    bottom:60px;
+    padding:12px 24px;
+    border:none;
+    border-radius:26px;
+    background:linear-gradient(135deg, #16a34a, #22c55e);
+    color:#fff;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.25s;
+    box-shadow:0 8px 24px rgba(16,185,129,.4);
+    z-index:99;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    letter-spacing:.2px;
+  }
+  .finish-early-btn:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 12px 32px rgba(16,185,129,.5);
+  }
+  .finish-early-btn:active{transform:translateY(-1px) scale(1);}
+  .finish-early-btn.hidden{display:none;}
+
+  .confirm-overlay{
+    position:fixed;inset:0;
+    background:rgba(30, 20, 10, .7);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    z-index:9998;
+    display:none;
+    align-items:center;justify-content:center;
+    padding:20px;
+    animation:fadeOverlay .3s ease;
+  }
+  .confirm-overlay.show{display:flex;}
+  @keyframes fadeOverlay{from{opacity:0;}to{opacity:1;}}
+
+  .confirm-card{
+    background:linear-gradient(180deg, #fffdf9, #fff7ed);
+    border:3px solid var(--amber);
+    border-radius:24px;
+    padding:40px 44px;
+    max-width:560px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 30px 80px rgba(245,158,11,.35);
+    animation:popIn .4s cubic-bezier(.2,.9,.3,1.2);
+  }
+  @keyframes popIn{
+    from{opacity:0;transform:scale(.9) translateY(20px);}
+    to{opacity:1;transform:scale(1) translateY(0);}
+  }
+
+  .confirm-card .big-icon{
+    font-size:70px;margin-bottom:10px;display:block;
+    animation:wobble 2s infinite;
+  }
+  @keyframes wobble{
+    0%, 100%{transform:rotate(-4deg);}
+    50%{transform:rotate(4deg);}
+  }
+
+  .confirm-card h2{
+    font-size:26px;color:var(--orange-dark);
+    margin:0 0 10px;font-weight:800;letter-spacing:-.3px;
+  }
+  .confirm-card .joke{
+    font-size:15px;color:var(--muted);line-height:1.6;
+    margin:0 0 24px;padding:0 10px;
+  }
+  .confirm-card .joke b{color:var(--orange-dark);}
+  .confirm-card .joke em{font-style:normal;color:var(--amber-dark);font-weight:700;}
+
+  .confirm-card .checklist-mini{
+    background:#fff;border:2px dashed var(--border);
+    border-radius:14px;padding:14px 20px;
+    text-align:left;font-size:14px;line-height:1.7;
+    margin-bottom:22px;color:var(--text);
+  }
+  .confirm-card .checklist-mini .item{
+    display:flex;align-items:flex-start;gap:10px;padding:4px 0;
+  }
+  .confirm-card .checklist-mini .item .mark{
+    color:var(--amber-dark);font-weight:800;flex-shrink:0;
+  }
+
+  .confirm-card .actions{
+    display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+  }
+
+  .confirm-card .actions button{
+    padding:14px 26px;border:none;border-radius:14px;
+    font-size:14px;font-weight:800;cursor:pointer;
+    transition:.2s;display:inline-flex;align-items:center;gap:8px;
+  }
+  .confirm-card .actions .btn-yes{
+    background:linear-gradient(135deg, #16a34a, #22c55e);
+    color:#fff;
+    box-shadow:0 6px 20px rgba(16,185,129,.35);
+  }
+  .confirm-card .actions .btn-yes:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 28px rgba(16,185,129,.5);
+  }
+  .confirm-card .actions .btn-no{
+    background:#fff;color:var(--orange-dark);
+    border:2px solid var(--orange);
+  }
+  .confirm-card .actions .btn-no:hover{
+    background:var(--orange-light);transform:translateY(-2px);
+  }
+
+  .time-over-overlay{
+    position:fixed;inset:0;
+    background:rgba(30, 20, 10, .75);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    z-index:9999;
+    display:none;
+    align-items:center;justify-content:center;
+    padding:20px;
+    animation:fadeOverlay .5s ease;
+  }
+  .time-over-overlay.show{display:flex;}
+
+  .time-over-card{
+    background:linear-gradient(180deg, #fffdf9, #fff7ed);
+    border:3px solid var(--orange);
+    border-radius:24px;
+    padding:44px 48px;
+    max-width:640px;width:100%;
+    text-align:center;
+    box-shadow:0 30px 80px rgba(234,88,12,.35);
+    animation:popIn .5s cubic-bezier(.2,.9,.3,1.2);
+    position:relative;
+  }
+
+  .time-over-card .big-icon{
+    font-size:64px;margin-bottom:12px;display:block;
+    animation:pulseIcon 2s infinite;
+  }
+  @keyframes pulseIcon{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+
+  .time-over-card h2{
+    font-size:30px;color:var(--orange-dark);
+    margin:0 0 12px;font-weight:800;letter-spacing:-.4px;
+  }
+  .time-over-card .subtitle-over{
+    font-size:15px;color:var(--muted);
+    margin:0 0 24px;line-height:1.5;
+  }
+  .time-over-card .instructions{
+    background:#fff;border:2px solid var(--border);
+    border-radius:14px;padding:20px 24px;
+    text-align:left;font-size:15px;line-height:1.7;
+    margin-bottom:20px;
+  }
+  .time-over-card .instructions .step{
+    display:flex;gap:12px;padding:8px 0;align-items:flex-start;
+  }
+  .time-over-card .instructions .step .num{
+    display:inline-flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg, var(--orange), var(--amber));
+    color:#fff;font-weight:800;font-size:13px;
+    width:26px;height:26px;border-radius:50%;
+    flex-shrink:0;box-shadow:0 3px 10px rgba(234,88,12,.3);
+  }
+  .time-over-card .instructions .step .text{flex:1;color:var(--text);}
+  .time-over-card .instructions .step .text b{color:var(--orange-dark);}
+  .time-over-card .brand-tag{
+    display:inline-block;
+    background:linear-gradient(135deg, var(--orange), var(--amber));
+    color:#fff;padding:8px 20px;border-radius:20px;
+    font-size:14px;font-weight:800;letter-spacing:.3px;
+    box-shadow:0 6px 18px rgba(234,88,12,.3);
+  }
+
+  .teacher-reset{
+    display:block;
+    margin:20px auto 0;
+    background:transparent;
+    border:none;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+    padding:6px 12px;
+    border-radius:8px;
+    transition:.2s;
+    opacity:.5;
+  }
+  .teacher-reset:hover{
+    opacity:1;
+    background:rgba(0,0,0,.05);
+  }
+</style>
+</head>
+<body>
+
+<span class="bg-leaf l1">📐</span>
+<span class="bg-leaf l2">📏</span>
+<span class="bg-leaf l3">🔷</span>
+<span class="bg-leaf l4">📐</span>
+<span class="bg-leaf l5">📏</span>
+<span class="bg-leaf l6">🔶</span>
+<span class="bg-leaf l7">📐</span>
+<span class="bg-leaf l8">📏</span>
+
+<header id="mainHeader">
+  <div class="header-title">Проверочная работа <span>· Прямоугольник и ромб</span></div>
+  <div class="header-tools">
+    <div id="timer">⏱ 15:00</div>
+    <div class="progress-pills">
+      <div class="progress-pill active" data-slide="0">Инфо</div>
+      <div class="progress-pill" data-slide="1">№1</div>
+      <div class="progress-pill" data-slide="2">№2</div>
+      <div class="progress-pill" data-slide="3">★</div>
+    </div>
+  </div>
+</header>
+
+<main id="mainContent">
+
+  <!-- СЛАЙД 0. ТИТУЛ -->
+  <section class="slide active">
+    <div class="title-slide">
+      <span class="slide-tag">Проверочная работа</span>
+      <h1>Прямоугольник и ромб</h1>
+      <p class="subtitle-big">Геометрия · 8 класс</p>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="num">2</span>
+          <span class="label">обязательных задания</span>
+        </div>
+        <div class="info-card">
+          <span class="num">★</span>
+          <span class="label">одно на выбор</span>
+        </div>
+        <div class="info-card">
+          <span class="num">⏱</span>
+          <span class="label">15 минут</span>
+        </div>
+      </div>
+
+      <div class="rules-box">
+        <b>📋 Как работать:</b>
+        <ul>
+          <li><b>Решение — в тетради.</b> Сначала пробуй сам.</li>
+          <li>Если не помнишь, как оформлять — нажми кнопку <b>«📐 Показать образец»</b> внизу.</li>
+          <li><b>Задания 1–2</b> — обязательные. <b>Задание ★</b> — один уровень на выбор.</li>
+          <li>Когда закончишь — нажми <b>«✅ Завершить работу»</b> внизу справа.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- СЛАЙД 1. №1 -->
+  <section class="slide">
+    <div class="slide-header">
+      <span class="slide-tag">Задание 1 · 4 мин · обязательно</span>
+      <h2>Прямоугольник</h2>
+      <p class="subtitle">Вспомни свойства диагоналей и углов прямоугольника.</p>
+    </div>
+    <div class="content-area">
+      <div class="task-zone">
+        <div class="task-large" style="flex:1;justify-content:center;">
+          <div class="task-expr">В прямоугольнике $ABCD$ диагонали пересекаются в точке $O$, $E$ — середина стороны $AB$, $\angle BAC = 50^\circ$.</div>
+          <div class="subtask-grid">
+            <div class="subtask"><span class="sub-letter">1</span><span>Найди $\angle EOD$</span></div>
+            <div class="subtask"><span class="sub-letter">2</span><span>Чему равен $\angle AOB$?</span></div>
+          </div>
+        </div>
+      </div>
+      <button class="sample-toggle-btn" onclick="toggleSample(this)">
+        <span>📐 Показать образец оформления</span>
+        <span class="arrow">▾</span>
+      </button>
+      <div class="sample-drawer">
+        <div class="sample-drawer-inner">
+          <div class="sample-grid">
+            <div class="sample-task">В прямоугольнике $ABCD$ $\angle BAC = 40^\circ$. Найди $\angle AOB$.</div>
+            <div class="sample-steps">
+              <div class="row"><span class="label">Дано:</span> $ABCD$ — прямоугольник, $\angle BAC = 40^\circ$.</div>
+              <div class="row"><span class="label">Решение:</span></div>
+              <div class="row sub">1) Диагонали прямоугольника равны и точкой пересечения делятся пополам: $AO = BO$.</div>
+              <div class="row sub">2) $\triangle AOB$ — равнобедренный, значит $\angle ABO = \angle BAO = 40^\circ$.</div>
+              <div class="row sub">3) $\angle AOB = 180^\circ - 40^\circ - 40^\circ = 100^\circ$.</div>
+              <div class="row"><span class="label">Ответ:</span> $100^\circ$.</div>
+            </div>
+            <div class="sample-note">
+              <b>Помни:</b> диагонали прямоугольника равны и делятся пополам. Это даёт равнобедренные треугольники.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- СЛАЙД 2. №2 -->
+  <section class="slide">
+    <div class="slide-header">
+      <span class="slide-tag">Задание 2 · 5 мин · обязательно</span>
+      <h2>Ромб</h2>
+      <p class="subtitle">Используй свойства углов ромба.</p>
+    </div>
+    <div class="content-area">
+      <div class="task-zone">
+        <div class="task-item">
+          <span class="task-letter">а</span>
+          <div class="task-content">
+            <div class="task-expr">Диагонали ромба составляют с его стороной углы, один из которых на $20^\circ$ меньше другого. Чему равен больший угол ромба?</div>
+          </div>
+        </div>
+        <div class="task-item">
+          <span class="task-letter">б</span>
+          <div class="task-content">
+            <div class="task-expr">В ромбе $ABCD$ $\angle A = 70^\circ$. Чему равен $\angle ABC$?</div>
+          </div>
+        </div>
+      </div>
+      <button class="sample-toggle-btn" onclick="toggleSample(this)">
+        <span>📐 Показать образец оформления</span>
+        <span class="arrow">▾</span>
+      </button>
+      <div class="sample-drawer">
+        <div class="sample-drawer-inner">
+          <div class="sample-grid">
+            <div class="sample-task">В ромбе $ABCD$ $\angle A = 60^\circ$. Найди $\angle ABC$.</div>
+            <div class="sample-steps">
+              <div class="row"><span class="label">Дано:</span> $ABCD$ — ромб, $\angle A = 60^\circ$.</div>
+              <div class="row"><span class="label">Решение:</span></div>
+              <div class="row sub">1) Противоположные углы ромба равны: $\angle C = \angle A = 60^\circ$.</div>
+              <div class="row sub">2) Сумма углов ромба $360^\circ$. Значит, $\angle B + \angle D = 360^\circ - 120^\circ = 240^\circ$.</div>
+              <div class="row sub">3) $\angle B = \angle D = 120^\circ$.</div>
+              <div class="row"><span class="label">Ответ:</span> $\angle ABC = 120^\circ$.</div>
+            </div>
+            <div class="sample-note">
+              <b>Помни:</b> у ромба противоположные углы равны, а сумма всех углов $360^\circ$.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- СЛАЙД 3. ★ -->
+  <section class="slide">
+    <div class="slide-header">
+      <span class="slide-tag">Задание 3 · 5 мин · на выбор</span>
+      <h2>Задание на выбор</h2>
+      <p class="subtitle">Нажми на свой уровень. Только один!</p>
+    </div>
+    <div class="content-area">
+      <div class="level-selector">
+        <div class="level-column easy" onclick="selectLevel(this)">
+          <div class="level-badge">🟢 Лёгкий</div>
+          <div class="level-task">
+            <div class="sub">В ромбе $ABCD$ высота $AK$, проведённая к стороне $BC$, пересекает диагональ $BD$ в точке $E$, $\angle ADE = 40^\circ$. Найдите $\angle EAC$.</div>
+          </div>
+        </div>
+        <div class="level-column medium" onclick="selectLevel(this)">
+          <div class="level-badge">🟡 Средний</div>
+          <div class="level-task">
+            <div class="sub">Внутри квадрата $ABCD$ выбрана точка $M$ так, что треугольник $AMD$ равносторонний. Найдите величину угла $\angle AMB$.</div>
+          </div>
+        </div>
+        <div class="level-column hard" onclick="selectLevel(this)">
+          <div class="level-badge">🔴 Сложный</div>
+          <div class="level-task">
+            <div class="sub">Через середину диагонали $KM$ прямоугольника $KLMN$ перпендикулярно этой диагонали проведена прямая, пересекающая стороны $KL$ и $MN$ в точках $A$ и $B$ соответственно. Известно, что $AB = BM = 6$ см. Найдите большую сторону прямоугольника.</div>
+          </div>
+        </div>
+      </div>
+      <button class="sample-toggle-btn" onclick="toggleSample(this)">
+        <span>📐 Показать образец оформления</span>
+        <span class="arrow">▾</span>
+      </button>
+      <div class="sample-drawer">
+        <div class="sample-drawer-inner">
+          <div class="sample-grid">
+            <div class="sample-task">В ромбе $ABCD$ $\angle A = 60^\circ$. Найди больший угол.</div>
+            <div class="sample-steps">
+              <div class="row"><span class="label">Решение:</span></div>
+              <div class="row sub">1) Противоположные углы ромба равны, поэтому $\angle C = 60^\circ$.</div>
+              <div class="row sub">2) Сумма углов $360^\circ$, значит $\angle B + \angle D = 240^\circ$.</div>
+              <div class="row sub">3) $\angle B = \angle D = 120^\circ$.</div>
+              <div class="row"><span class="label">Ответ:</span> $120^\circ$.</div>
+            </div>
+            <div class="sample-note">
+              <b>Помни:</b> в ромбе противоположные углы равны, а сумма всех углов $360^\circ$.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<button class="finish-early-btn" id="finishEarlyBtn" onclick="askFinishEarly()">
+  ✅ Завершить работу
+</button>
+
+<nav id="mainNav">
+  <button class="nav-prev" id="navPrev" onclick="changeSlide(-1)" disabled>← Назад</button>
+  <div class="nav-info" id="navInfo">Слайд 1 из 4</div>
+  <button class="nav-next" id="navNext" onclick="changeSlide(1)">Далее →</button>
+</nav>
+
+<!-- ПОДТВЕРЖДЕНИЕ -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-card">
+    <span class="big-icon">🤔</span>
+    <h2>Точно-точно закончил?</h2>
+    <p class="joke">
+      А ты <b>всё проверил</b>? Может, где-то забыл <em>свойство диагоналей</em>,<br>
+      перепутал <em>углы</em> или не сделал чертёж? 😉
+    </p>
+
+    <div class="checklist-mini">
+      <div class="item"><span class="mark">✓</span> Все 3 задания решены?</div>
+      <div class="item"><span class="mark">✓</span> Чертёж сделан там, где нужно?</div>
+      <div class="item"><span class="mark">✓</span> Свойства прямоугольника и ромба применены верно?</div>
+      <div class="item"><span class="mark">✓</span> Ответы выделены?</div>
+      <div class="item"><span class="mark">✓</span> Тетрадь не забыл дома? 🎒</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-no" onclick="closeConfirm()">
+        🔄 Ещё проверю
+      </button>
+      <button class="btn-yes" onclick="confirmFinish()">
+        ✅ Да, я всё проверил!
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ФИНАЛЬНОЕ ОКНО -->
+<div class="time-over-overlay" id="timeOverOverlay">
+  <div class="time-over-card">
+    <span class="big-icon">⏰</span>
+    <h2>Работа завершена!</h2>
+    <p class="subtitle-over">
+      Спасибо за работу — теперь осталось совсем немного.
+    </p>
+
+    <div class="instructions">
+      <div class="step">
+        <span class="num">1</span>
+        <div class="text">
+          <b>Сфотографируй свою работу</b> из тетради.<br>
+          Убедись, что все задания видны и читаются.
+        </div>
+      </div>
+      <div class="step">
+        <span class="num">2</span>
+        <div class="text">
+          Открой платформу <b>Umaclass</b>.
+        </div>
+      </div>
+      <div class="step">
+        <span class="num">3</span>
+        <div class="text">
+          Найди блок <b>«Самостоятельная работа»</b>.<br>
+          Загрузи фото в окошко для самостоятельной работы.
+        </div>
+      </div>
+      <div class="step">
+        <span class="num">4</span>
+        <div class="text">
+          <b>Отправь работу.</b> Учитель проверит и вернётся с обратной связью.
+        </div>
+      </div>
+    </div>
+
+    <span class="brand-tag">📚 Umaclass · Самостоятельная работа</span>
+
+    <button class="teacher-reset" onclick="teacherReset()" title="Сбросить и начать заново (для учителя)">
+      ⟲ Сбросить для следующего ученика
+    </button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   МЕТКА ЗАВЕРШЕНИЯ В LOCALSTORAGE
+   ============================================================ */
+var STORAGE_KEY = 'geometry_test_urok3_finished';
+
+function isFinished(){
+  try{
+    return localStorage.getItem(STORAGE_KEY) === 'true';
+  }catch(e){
+    return false;
+  }
+}
+
+function markFinished(){
+  try{
+    localStorage.setItem(STORAGE_KEY, 'true');
+  }catch(e){}
+}
+
+function clearFinished(){
+  try{
+    localStorage.removeItem(STORAGE_KEY);
+  }catch(e){}
+}
+
+/* ============================================================
+   ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЯ
+   ============================================================ */
+var current = 0;
+var slides = document.querySelectorAll('.slide');
+var total = slides.length;
+var prevBtn = document.getElementById('navPrev');
+var nextBtn = document.getElementById('navNext');
+var navInfo = document.getElementById('navInfo');
+var pills = document.querySelectorAll('.progress-pill');
+var finishEarlyBtn = document.getElementById('finishEarlyBtn');
+var confirmOverlay = document.getElementById('confirmOverlay');
+var timeOverOverlay = document.getElementById('timeOverOverlay');
+var finished = false;
+var timerInterval = null;
+
+function showSlide(i){
+  slides.forEach(function(s, idx){
+    s.classList.toggle('active', idx === i);
+  });
+  pills.forEach(function(p, idx){
+    p.classList.toggle('active', idx === i);
+    p.classList.toggle('done', idx < i);
+  });
+  prevBtn.disabled = (i === 0);
+  nextBtn.disabled = (i === total - 1);
+  navInfo.textContent = 'Слайд ' + (i + 1) + ' из ' + total;
+  renderMath();
+}
+
+function changeSlide(dir){
+  if(finished) return;
+  current = Math.min(Math.max(current + dir, 0), total - 1);
+  showSlide(current);
+}
+
+pills.forEach(function(p, idx){
+  p.addEventListener('click', function(){
+    if(finished) return;
+    current = idx;
+    showSlide(current);
+  });
+});
+
+function renderMath(){
+  if(window.MathJax && MathJax.typesetPromise){
+    MathJax.typesetPromise().catch(function(err){
+      console.log('MathJax error:', err);
+    });
+  }
+}
+
+function toggleSample(btn){
+  if(finished) return;
+  var drawer = btn.nextElementSibling;
+  var isOpen = drawer.classList.contains('open');
+  if(isOpen){
+    drawer.classList.remove('open');
+    btn.classList.remove('open');
+    btn.querySelector('span').textContent = '📐 Показать образец оформления';
+  } else {
+    drawer.classList.add('open');
+    btn.classList.add('open');
+    btn.querySelector('span').textContent = '📐 Скрыть образец';
+    setTimeout(renderMath, 50);
+  }
+}
+
+function selectLevel(column){
+  if(finished) return;
+  var all = document.querySelectorAll('.level-column');
+  var wasActive = column.classList.contains('active');
+  all.forEach(function(c){ c.classList.remove('active'); });
+  if(!wasActive){
+    column.classList.add('active');
+  }
+}
+
+/* ============================================================
+   ЗАВЕРШЕНИЕ
+   ============================================================ */
+function askFinishEarly(){
+  if(finished) return;
+  confirmOverlay.classList.add('show');
+}
+
+function closeConfirm(){
+  confirmOverlay.classList.remove('show');
+}
+
+function confirmFinish(){
+  confirmOverlay.classList.remove('show');
+  finishWork();
+}
+
+function finishWork(){
+  finished = true;
+  markFinished();
+  timeOverOverlay.classList.add('show');
+
+  finishEarlyBtn.classList.add('hidden');
+  document.getElementById('mainHeader').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('mainNav').style.display = 'none';
+
+  document.body.style.overflow = 'hidden';
+
+  if(timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
+/* ============================================================
+   СБРОС ДЛЯ УЧИТЕЛЯ
+   ============================================================ */
+function teacherReset(){
+  if(!confirm('Сбросить проверочную работу и начать заново?\n\nВНИМАНИЕ: это для учителя. Ученик начнёт с чистого листа.')) return;
+
+  clearFinished();
+  location.reload();
+}
+
+/* ============================================================
+   ТАЙМЕР — 15 МИНУТ
+   ============================================================ */
+var timeLeft = 15 * 60;
+var timerEl = document.getElementById('timer');
+
+function updateTimer(){
+  if(timeLeft <= 0){
+    timerEl.textContent = '⏱ 00:00';
+    timerEl.classList.add('warning');
+    if(!finished){
+      finishWork();
+    }
+    return;
+  }
+  var m = Math.floor(timeLeft / 60);
+  var s = timeLeft % 60;
+  timerEl.textContent = '⏱ ' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  if(timeLeft <= 120){
+    timerEl.classList.add('warning');
+  } else {
+    timerEl.classList.remove('warning');
+  }
+}
+
+function startTimer(){
+  timerInterval = setInterval(function(){
+    if(timeLeft > 0 && !finished){
+      timeLeft--;
+      updateTimer();
+    }
+  }, 1000);
+}
+
+/* ============================================================
+   ЗАПУСК
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function(){
+  if(isFinished()){
+    finished = true;
+    finishEarlyBtn.classList.add('hidden');
+    document.getElementById('mainHeader').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('mainNav').style.display = 'none';
+    timeOverOverlay.classList.add('show');
+    return;
+  }
+
+  showSlide(0);
+  updateTimer();
+  startTimer();
+  renderMath();
+  setTimeout(renderMath, 500);
+  setTimeout(renderMath, 1500);
+});
+</script>
+
+</body>
+</html>
